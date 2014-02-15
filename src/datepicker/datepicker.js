@@ -328,7 +328,7 @@ function ($compile, $parse, $document, $position, dateFilter, datepickerPopupCon
       };
 
       attrs.$observe('datepickerPopup', function(value) {
-          dateFormat = value || datepickerPopupConfig.dateFormat;
+          dateFormat = value || datepickerPopupConfig.datepickerPopup;
           ngModel.$render();
       });
 
