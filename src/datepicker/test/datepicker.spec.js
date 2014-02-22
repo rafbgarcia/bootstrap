@@ -810,8 +810,16 @@ describe('datepicker directive', function () {
         };
       }));
 
-      it('to display the correct value in input', function() {
+      it('displays the correct value as yyyy-MM-dd by default', function() {
         expect(inputEl.val()).toBe('2010-09-30');
+      });
+
+      it('displays the value as specified in the datepicker-popup attribute', function() {
+        var wrapElement = $compile('<div><input ng-model="date" datepicker-popup="MM-dd-yyyy"><div>')($rootScope);
+        $rootScope.$digest();
+        assignElements(wrapElement);
+
+        expect(inputEl.val()).toEqual('09-30-2010');
       });
 
       it('does not to display datepicker initially', function() {
