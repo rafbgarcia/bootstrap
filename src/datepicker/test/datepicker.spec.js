@@ -786,6 +786,44 @@ describe('datepicker directive', function () {
 
   });
 
+  describe('setting datepickerPopupConfig', function() {
+    var inputEl, buttons;
+
+    function assignElements(wrapElement) {
+      inputEl = wrapElement.find('input');
+      buttons = wrapElement.find('ul > li:last button');
+    }
+
+    var originalConfig = {};
+    beforeEach(inject(function(datepickerPopupConfig) {
+      angular.extend(originalConfig, datepickerPopupConfig);
+      datepickerPopupConfig.datepickerPopup = 'MM-dd-yyyy';
+      datepickerPopupConfig.currentText = 'TestToday';
+      datepickerPopupConfig.clearText = 'TestClear';
+      datepickerPopupConfig.closeText = 'TestDone';
+      datepickerPopupConfig.closeOnDateSelection = true;
+      datepickerPopupConfig.appendToBody = false;
+      datepickerPopupConfig.showButtonBar = true;
+
+      wrapElement = $compile('<div><input ng-model="date" datepicker-popup></div>')($rootScope);
+      $rootScope.$digest();
+      assignElements(wrapElement);
+    }));
+    afterEach(inject(function(datepickerPopupConfig) {
+      // return it to the original state
+      angular.extend(datepickerPopupConfig, originalConfig);
+    }));
+
+    it('changes date format', function() {
+      expect(inputEl.val()).toEqual('09-30-2010');
+    });
+
+    it('changes the current text', function() {
+      expect(buttons.eq(0).text()).toEqual('TestToday');
+    });
+
+  });
+
   describe('as popup', function () {
     var inputEl, dropdownEl, changeInputValueTo, $document;
 
