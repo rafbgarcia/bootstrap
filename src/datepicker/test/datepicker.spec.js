@@ -786,6 +786,32 @@ describe('datepicker directive', function () {
 
   });
 
+  describe('setting datepickerPopupConfig', function() {
+    var originalConfig = {};
+    beforeEach(inject(function(datepickerPopupConfig) {
+      angular.extend(originalConfig, datepickerPopupConfig);
+      datepickerPopupConfig.datepickerPopup = 'MM-dd-yyyy';
+      datepickerPopupConfig.currentText = 'Today';
+      datepickerPopupConfig.clearText = 'Clear';
+      datepickerPopupConfig.closeText = 'Done';
+      datepickerPopupConfig.closeOnDateSelection = true;
+      datepickerPopupConfig.appendToBody = false;
+      datepickerPopupConfig.showButtonBar = true;
+
+      element = $compile('<input ng-model="date" datepicker-popup>')($rootScope);
+      $rootScope.$digest();
+    }));
+    afterEach(inject(function(datepickerPopupConfig) {
+      // return it to the original state
+      angular.extend(datepickerPopupConfig, originalConfig);
+    }));
+
+    it('changes date format', function() {
+      expect(element.val()).toEqual('09-30-2010');
+    });
+
+  });
+
   describe('as popup', function () {
     var inputEl, dropdownEl, changeInputValueTo, $document;
 
@@ -812,14 +838,6 @@ describe('datepicker directive', function () {
 
       it('displays the correct value as yyyy-MM-dd by default', function() {
         expect(inputEl.val()).toBe('2010-09-30');
-      });
-
-      it('displays the value as specified in the datepicker-popup attribute', function() {
-        var wrapElement = $compile('<div><input ng-model="date" datepicker-popup="MM-dd-yyyy"><div>')($rootScope);
-        $rootScope.$digest();
-        assignElements(wrapElement);
-
-        expect(inputEl.val()).toEqual('09-30-2010');
       });
 
       it('does not to display datepicker initially', function() {
