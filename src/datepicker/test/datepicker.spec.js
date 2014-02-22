@@ -826,6 +826,10 @@ describe('datepicker directive', function () {
       expect(buttons.eq(1).text()).toEqual('TestClear');
     });
 
+    it('changes the close text', function() {
+      expect(buttons.eq(2).text()).toEqual('TestDone');
+    });
+
   });
 
   describe('as popup', function () {
