@@ -787,12 +787,14 @@ describe('datepicker directive', function () {
   });
 
   describe('setting datepickerPopupConfig', function() {
-    var inputEl, buttons, buttonBarElement;
+    var inputEl, buttons, buttonBarEl, dropdownEl;
 
     function assignElements(wrapElement) {
       inputEl = wrapElement.find('input');
-      buttonBarElement = wrapElement.find('.button-bar');
-      buttons = buttonBarElement.find('button');
+      dropdownEl = wrapElement.find('.dropdown-menu');
+      buttonBarEl = dropdownEl.find('.button-bar');
+      buttons = buttonBarEl.find('button');
+      element = dropdownEl.find('table');
     }
 
     var originalConfig = {};
@@ -837,7 +839,22 @@ describe('datepicker directive', function () {
       $rootScope.$digest();
       assignElements(wrapElement);
 
-      expect(buttonBarElement.length).toBe(0);
+      expect(buttonBarEl.length).toBe(0);
+    }));
+
+    it('changes on date selection behaviour', inject(function(datepickerPopupConfig) {
+      inputEl.focus();
+      clickOption(30);
+      expect(dropdownEl).toBeHidden();
+
+      datepickerPopupConfig.closeOnDateSelection = false;
+      wrapElement = $compile('<div><input ng-model="date" datepicker-popup></div>')($rootScope);
+      $rootScope.$digest();
+      assignElements(wrapElement);
+
+      inputEl.focus();
+      clickOption(30);
+      expect(dropdownEl).not.toBeHidden();
     }));
 
   });
