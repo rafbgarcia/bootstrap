@@ -787,11 +787,12 @@ describe('datepicker directive', function () {
   });
 
   describe('setting datepickerPopupConfig', function() {
-    var inputEl, buttons;
+    var inputEl, buttons, buttonBarElement;
 
     function assignElements(wrapElement) {
       inputEl = wrapElement.find('input');
-      buttons = wrapElement.find('ul > li:last button');
+      buttonBarElement = wrapElement.find('.button-bar');
+      buttons = buttonBarElement.find('button');
     }
 
     var originalConfig = {};
@@ -829,6 +830,15 @@ describe('datepicker directive', function () {
     it('changes the close text', function() {
       expect(buttons.eq(2).text()).toEqual('TestDone');
     });
+
+    it('hide the button bar', inject(function(datepickerPopupConfig) {
+      datepickerPopupConfig.showButtonBar = false;
+      wrapElement = $compile('<div><input ng-model="date" datepicker-popup></div>')($rootScope);
+      $rootScope.$digest();
+      assignElements(wrapElement);
+
+      expect(buttonBarElement.length).toBe(0);
+    }));
 
   });
 
