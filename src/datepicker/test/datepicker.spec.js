@@ -796,22 +796,76 @@ describe('datepicker directive', function () {
   });
 
   describe('setting datepickerPopupConfig', function() {
+    var inputEl, buttons, buttonBarEl, dropdownEl;
+
+    function assignElements(wrapElement) {
+      inputEl = wrapElement.find('input');
+      dropdownEl = wrapElement.find('.dropdown-menu');
+      buttonBarEl = dropdownEl.find('.button-bar');
+      buttons = buttonBarEl.find('button');
+      element = dropdownEl.find('table');
+    }
+
     var originalConfig = {};
     beforeEach(inject(function(datepickerPopupConfig) {
       angular.extend(originalConfig, datepickerPopupConfig);
       datepickerPopupConfig.datepickerPopup = 'MM-dd-yyyy';
+      datepickerPopupConfig.currentText = 'TestToday';
+      datepickerPopupConfig.clearText = 'TestClear';
+      datepickerPopupConfig.closeText = 'TestDone';
+      datepickerPopupConfig.closeOnDateSelection = true;
+      datepickerPopupConfig.appendToBody = false;
+      datepickerPopupConfig.showButtonBar = true;
 
-      element = $compile('<input ng-model="date" datepicker-popup>')($rootScope);
+      wrapElement = $compile('<div><input ng-model="date" datepicker-popup></div>')($rootScope);
       $rootScope.$digest();
+      assignElements(wrapElement);
     }));
+
     afterEach(inject(function(datepickerPopupConfig) {
       // return it to the original state
       angular.extend(datepickerPopupConfig, originalConfig);
     }));
 
     it('changes date format', function() {
-      expect(element.val()).toEqual('09-30-2010');
+      expect(inputEl.val()).toEqual('09-30-2010');
     });
+
+    it('changes the current text', function() {
+      expect(buttons.eq(0).text()).toEqual('TestToday');
+    });
+
+    it('changes the clear text', function() {
+      expect(buttons.eq(1).text()).toEqual('TestClear');
+    });
+
+    it('changes the close text', function() {
+      expect(buttons.eq(2).text()).toEqual('TestDone');
+    });
+
+    it('hide the button bar', inject(function(datepickerPopupConfig) {
+      datepickerPopupConfig.showButtonBar = false;
+      wrapElement = $compile('<div><input ng-model="date" datepicker-popup></div>')($rootScope);
+      $rootScope.$digest();
+      assignElements(wrapElement);
+
+      expect(buttonBarEl.length).toBe(0);
+    }));
+
+    it('changes on date selection behaviour', inject(function(datepickerPopupConfig) {
+      inputEl.focus();
+      clickOption(30);
+      expect(dropdownEl).toBeHidden();
+
+      datepickerPopupConfig.closeOnDateSelection = false;
+      wrapElement = $compile('<div><input ng-model="date" datepicker-popup></div>')($rootScope);
+      $rootScope.$digest();
+      assignElements(wrapElement);
+
+      inputEl.focus();
+      clickOption(30);
+      expect(dropdownEl).not.toBeHidden();
+    }));
 
   });
 
